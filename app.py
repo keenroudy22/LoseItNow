@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, render_template, request, jsonify
 
 app = Flask(__name__)
 
@@ -28,6 +28,10 @@ def calculate_macros(gender, age, height, weight, goal_weight, activity_level):
         "fats": round(fats),
         "carbs": round(carbs)
     }
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 @app.route('/calculate', methods=['POST'])
 def calculate():
