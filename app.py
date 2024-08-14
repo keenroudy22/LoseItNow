@@ -23,6 +23,8 @@ def calculate_macros(gender, age, height_cm, weight_kg, goal_weight_kg, activity
     carbs = (goal_calories - (protein * 4) - (fats * 9)) / 4
 
     return {
+        "bmr": round(bmr),
+        "tdee": round(tdee),
         "calories": round(goal_calories),
         "protein": round(protein),
         "fats": round(fats),
