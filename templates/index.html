@@ -111,7 +111,8 @@
 
     <script>
         document.getElementById('macroForm').addEventListener('submit', async function(event) {
-            event.preventDefault();
+            event.preventDefault(); // Prevent the form from submitting the default way
+            
             const gender = document.getElementById('gender').value;
             const age = document.getElementById('age').value;
             const heightFeet = document.getElementById('heightFeet').value;
@@ -121,22 +122,39 @@
             const activityLevel = document.getElementById('activityLevel').value;
             const targetWeeks = document.getElementById('targetWeeks').value;
 
-            const response = await fetch('/calculate', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    gender, age, heightFeet, heightInches, weight, goalWeight, activityLevel, targetWeeks
-                })
-            });
+            try {
+                const response = await fetch('/calculate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        gender, age, heightFeet, heightInches, weight, goalWeight, activityLevel, targetWeeks
+                    })
+                });
 
-            const data = await response.json();
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
 
-            const resultDiv = document.getElementById('result');
-            resultDiv.style.display = 'block';
-            resultDiv.innerHTML = `
-                <h2>Your Daily Macros</h2>
-                <p><strong>BMR (Calories without activity):</strong> ${data.bmr} kcal</p>
-                <p><strong>TDEE (Calories with activity):</strong> ${data.tdee} kcal</p>
-                <
+                const data = await response.json();
+
+                const resultDiv = document.getElementById('result');
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = `
+                    <h2>Your Daily Macros</h2>
+                    <p><strong>BMR (Calories without activity):</strong> ${data.bmr} kcal</p>
+                    <p><strong>TDEE (Calories with activity):</strong> ${data.tdee} kcal</p>
+                    <p><strong>Calories for Goal (to reach your goal weight in ${targetWeeks} weeks):</strong> ${data.calories} kcal</p>
+                    <p><strong>Protein:</strong> ${data.protein} g</p>
+                    <p><strong>Fats:</strong> ${data.fats} g</p>
+                    <p><strong>Carbs:</strong> ${data.carbs} g</p>
+                `;
+            } catch (error) {
+                console.error('There was a problem with the fetch operation:', error);
+                alert('Error calculating macros. Please try again.');
+            }
+        });
+    </script>
+</body>
+</html>
