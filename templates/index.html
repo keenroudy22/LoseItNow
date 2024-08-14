@@ -131,7 +131,9 @@
             resultDiv.style.display = 'block';
             resultDiv.innerHTML = `
                 <h2>Your Daily Macros</h2>
-                <p><strong>Calories:</strong> ${data.calories} kcal</p>
+                <p><strong>BMR (Calories without activity):</strong> ${data.bmr} kcal</p>
+                <p><strong>TDEE (Calories with activity):</strong> ${data.tdee} kcal</p>
+                <p><strong>Calories for Goal:</strong> ${data.calories} kcal</p>
                 <p><strong>Protein:</strong> ${data.protein} g</p>
                 <p><strong>Fats:</strong> ${data.fats} g</p>
                 <p><strong>Carbs:</strong> ${data.carbs} g</p>
