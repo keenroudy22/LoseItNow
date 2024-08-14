@@ -98,6 +98,11 @@
                 </select>
             </div>
 
+            <div class="mb-3">
+                <label for="targetWeeks" class="form-label">Target Weeks to Reach Goal</label>
+                <input type="number" id="targetWeeks" class="form-control" required>
+            </div>
+
             <button type="submit" class="btn btn-success w-100">Calculate</button>
         </form>
 
@@ -114,6 +119,7 @@
             const weight = document.getElementById('weight').value;
             const goalWeight = document.getElementById('goalWeight').value;
             const activityLevel = document.getElementById('activityLevel').value;
+            const targetWeeks = document.getElementById('targetWeeks').value;
 
             const response = await fetch('/calculate', {
                 method: 'POST',
@@ -121,7 +127,7 @@
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    gender, age, heightFeet, heightInches, weight, goalWeight, activityLevel
+                    gender, age, heightFeet, heightInches, weight, goalWeight, activityLevel, targetWeeks
                 })
             });
 
@@ -133,12 +139,4 @@
                 <h2>Your Daily Macros</h2>
                 <p><strong>BMR (Calories without activity):</strong> ${data.bmr} kcal</p>
                 <p><strong>TDEE (Calories with activity):</strong> ${data.tdee} kcal</p>
-                <p><strong>Calories for Goal (with deficit):</strong> ${data.calories} kcal</p>
-                <p><strong>Protein:</strong> ${data.protein} g</p>
-                <p><strong>Fats:</strong> ${data.fats} g</p>
-                <p><strong>Carbs:</strong> ${data.carbs} g</p>
-            `;
-        });
-    </script>
-</body>
-</html>
+                <
