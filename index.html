@@ -1,1 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Macro Calculator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            max-width: 600px;
+            width: 100%;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #333;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #e9f5ff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        .result h2 {
+            margin-bottom: 15px;
+            font-size: 22px;
+            color: #333;
+        }
+        .result p {
+            font-size: 18px;
+            color: #555;
+            margin: 5px 0;
+        }
+        .form-label {
+            font-weight: 600;
+        }
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+        .btn-success:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+    </style>
+</head>
+<body>
 
+    <div class="container">
+        <h1>Macro Calculator</h1>
+        <form id="macroForm">
+            <div class="mb-3">
+                <label for="gender" class="form-label">Gender</label>
+                <select id="gender" class="form-select" required>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="age" class="form-label">Age (years)</label>
+                <input type="number" id="age" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="heightFeet" class="form-label">Height (feet)</label>
+                <input type="number" id="heightFeet" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="heightInches" class="form-label">Height (inches)</label>
+                <input type="number" id="heightInches" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="weight" class="form-label">Weight (lbs)</label>
+                <input type="number" id="weight" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="goalWeight" class="form-label">Goal Weight (lbs)</label>
+                <input type="number" id="goalWeight" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="activityLevel" class="form-label">Activity Level</label>
+                <select id="activityLevel" class="form-select" required>
+                    <option value="1.2">Sedentary</option>
+                    <option value="1.375">Lightly Active</option>
+                    <option value="1.55">Moderately Active</option>
+                    <option value="1.725">Very Active</option>
+                    <option value="1.9">Super Active</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="targetWeeks" class="form-label">Target Weeks to Reach Goal</label>
+                <input type="number" id="targetWeeks" class="form-control" required>
+            </div>
+
+            <button type="submit" class="btn btn-success w-100">Calculate</button>
+        </form>
+
+        <div id="result" class="result" style="display:none;"></div>
+    </div>
+
+    <script>
+        function calculateMacros(gender, age, heightCm, weightKg, goalWeightKg, activityLevel, targetWeeks) {
+            let bmr;
+
+            if (gender === "male") {
+                bmr = 10 * weightKg + 6.25 * heightCm - 5 * age + 5;
+            } else {
+                bmr = 10 * weightKg + 6.25 * heightCm - 5 * age - 161;
+            }
+
+            const tdee = bmr * parseFloat(activityLevel);
+
+            const weightChange = weightKg - goalWeightKg;
+            const weeklyDeficit = weightChange * 3500 / targetWeeks;
+            const dailyDeficit = weeklyDeficit / 7;
+
+            const goalCalories = tdee - dailyDeficit;
+
+            const protein = 2 * weightKg;
+            const fats = (goalCalories * 0.25) / 9;
+            const carbs = (goalCalories - (protein * 4) - (fats * 9)) / 4;
+
+            return {
+                bmr: Math.round(bmr),
+                tdee: Math.round(tdee),
+                calories: Math.round(goalCalories),
+                protein: Math.round(protein),
+                fats: Math.round(fats),
+                carbs: Math.round(carbs)
+            };
+        }
+
+        document.getElementById('macroForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const gender = document.getElementById('gender').value;
+            const age = document.getElementById('age').value;
+            const heightFeet = document.getElementById('heightFeet').value;
+            const heightInches = document.getElementById('heightInches').value;
+            const weight = document.getElementById('weight').value;
+            const goalWeight = document.getElementById('goalWeight').value;
+            const activityLevel = document.getElementById('activityLevel').value;
+            const targetWeeks = document.getElementById('targetWeeks').value;
+
+            const heightCm = (heightFeet * 30.48) + (heightInches * 2.54);
+            const weightKg = weight / 2.205;
+            const goalWeightKg = goalWeight / 2.205;
+
+            const macros = calculateMacros(gender, age, heightCm, weightKg, goalWeightKg, activityLevel, targetWeeks);
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `
+                <h2>Your Daily Macros</h2>
+                <p><strong>BMR (Calories without activity):</strong> ${macros.bmr} kcal</p>
+                <p><strong>TDEE (Calories with activity):</strong> ${macros.tdee} kcal</p>
+                <p><strong>Calories for Goal (to reach your goal weight in ${targetWeeks} weeks):</strong> ${macros.calories} kcal</p>
+                <p><strong>Protein:</strong> ${macros.protein} g</p>
+                <p><strong>Fats:</strong> ${macros.fats} g</p>
+                <p><strong>Carbs:</strong> ${macros.carbs} g</p>
+            `;
+        });
+    </script>
+</body>
+</html>
